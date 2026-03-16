@@ -86,7 +86,10 @@ async def verify_otp(user_id: str, code: str, purpose: OTPPurpose) -> bool:
             detail="Invalid OTP code.",
         )
 
-    if datetime.now(timezone.utc) > record.expires_at:
+    # Handle both naive and aware datetimes from MongoDB
+    now = datetime.now(timezone.utc)
+    expires = record.expires_at if record.expires_at.tzinfo else record.expires_at.replace(tzinfo=timezone.utc)
+    if now > expires:
         record.is_used = True
         await record.save()
         raise HTTPException(

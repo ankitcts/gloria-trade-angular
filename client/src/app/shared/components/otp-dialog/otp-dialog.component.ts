@@ -45,15 +45,13 @@ export interface OtpDialogData {
           <p class="step-label">Choose verification method:</p>
           <mat-radio-group [(ngModel)]="method" class="method-group">
             <mat-radio-button value="email">Email</mat-radio-button>
-            <mat-radio-button value="phone">Mobile</mat-radio-button>
+            <mat-radio-button value="phone" disabled>Mobile (coming soon)</mat-radio-button>
           </mat-radio-group>
 
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ method === 'email' ? 'Email Address' : 'Mobile Number' }}</mat-label>
-            <input matInput [(ngModel)]="destination"
-                   [type]="method === 'email' ? 'email' : 'tel'"
-                   [placeholder]="method === 'email' ? 'you@example.com' : '+1234567890'" />
-            <mat-icon matPrefix>{{ method === 'email' ? 'email' : 'phone' }}</mat-icon>
+            <mat-label>Email Address</mat-label>
+            <input matInput [(ngModel)]="destination" type="email" placeholder="you@example.com" />
+            <mat-icon matPrefix>email</mat-icon>
           </mat-form-field>
 
           @if (error()) {
