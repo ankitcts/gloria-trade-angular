@@ -54,8 +54,8 @@ gloria-trade-angular/
 - [x] Phase 6: Predictions (ML predictions grid, signal badges, risk metrics, price forecast)
 - [x] Phase 7: Watchlist (CRUD, securities list, price alerts) + Notifications (list, unread count, mark read)
 - [x] Phase 9: Admin panel (user management table, role/status actions)
-- [ ] Phase 8: WebSocket integration (real-time price updates, order status, notifications)
-- [ ] Phase 10: Dashboard enhancements + responsive polish
+- [x] Phase 8: WebSocket integration (connection manager, channel subscriptions, auto-reconnect, heartbeat)
+- [x] Phase 10: Dashboard (summary cards, top securities, recent orders, quick actions, responsive, WS status indicator)
 
 ## Key Patterns
 - Standalone components only (no NgModules)

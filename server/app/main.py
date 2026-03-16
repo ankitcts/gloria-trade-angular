@@ -13,6 +13,7 @@ from app.predictions.router import router as predictions_router
 from app.watchlists.router import router as watchlists_router
 from app.notifications.router import router as notifications_router
 from app.admin.router import router as admin_router
+from app.websocket.router import router as ws_router
 
 
 @asynccontextmanager
@@ -46,6 +47,9 @@ app.include_router(predictions_router, prefix="/api/v1/predictions", tags=["pred
 app.include_router(watchlists_router, prefix="/api/v1/watchlists", tags=["watchlists"])
 app.include_router(notifications_router, prefix="/api/v1/notifications", tags=["notifications"])
 app.include_router(admin_router, prefix="/api/v1/admin", tags=["admin"])
+
+# WebSocket
+app.include_router(ws_router, prefix="/ws", tags=["websocket"])
 
 
 @app.get("/api/v1/health")
