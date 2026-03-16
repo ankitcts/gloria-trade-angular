@@ -41,8 +41,16 @@ import { UserRole, AccountStatus } from '../../models/user.model';
       <!-- User Management -->
       <mat-card>
         <mat-card-header>
-          <mat-card-title>User Management</mat-card-title>
-          <mat-card-subtitle>{{ adminService.totalUsers() }} total users</mat-card-subtitle>
+          <div class="card-header-row">
+            <div>
+              <mat-card-title>User Management</mat-card-title>
+              <mat-card-subtitle>{{ adminService.totalUsers() }} total users</mat-card-subtitle>
+            </div>
+            <button mat-raised-button color="primary" (click)="openAddUser()">
+              <mat-icon>person_add</mat-icon>
+              Add User
+            </button>
+          </div>
         </mat-card-header>
         <mat-card-content>
           @if (adminService.loading()) {
@@ -94,6 +102,11 @@ import { UserRole, AccountStatus } from '../../models/user.model';
                     <mat-icon>more_vert</mat-icon>
                   </button>
                   <mat-menu #actionMenu="matMenu">
+                    <button mat-menu-item (click)="openEditUser(row)">
+                      <mat-icon>edit</mat-icon>
+                      <span>Edit User</span>
+                    </button>
+                    <mat-divider></mat-divider>
                     <button mat-menu-item (click)="changeRole(row.id, 'admin')">Set Admin</button>
                     <button mat-menu-item (click)="changeRole(row.id, 'trader')">Set Trader</button>
                     <button mat-menu-item (click)="changeRole(row.id, 'analyst')">Set Analyst</button>
@@ -120,6 +133,7 @@ import { UserRole, AccountStatus } from '../../models/user.model';
   `,
   styles: [`
     .admin-page { max-width: 1100px; }
+    .card-header-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
     .page-title { font-size: 24px; font-weight: 600; margin-bottom: 20px; }
     .loading-container { display: flex; justify-content: center; padding: 32px; }
     .users-table { width: 100%; }
@@ -141,6 +155,7 @@ import { UserRole, AccountStatus } from '../../models/user.model';
 export default class AdminComponent implements OnInit {
   readonly adminService = inject(AdminService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
   displayedColumns = ['email', 'role', 'status', 'kyc', 'last_login', 'actions'];
 
   ngOnInit(): void {
@@ -153,6 +168,36 @@ export default class AdminComponent implements OnInit {
 
   changeStatus(userId: string, status: string): void {
     this.adminService.updateStatus(userId, status as AccountStatus);
+  }
+
+  openAddUser(): void {
+    import('./components/user-dialog.component').then((m) => {
+      const ref = this.dialog.open(m.UserDialogComponent, {
+        data: { mode: 'create' },
+        width: '520px',
+      });
+      ref.afterClosed().subscribe((created) => {
+        if (created) {
+          this.snackBar.open('User created. Welcome email sent.', 'OK', { duration: 3000 });
+          this.adminService.loadUsers();
+        }
+      });
+    });
+  }
+
+  openEditUser(user: any): void {
+    import('./components/user-dialog.component').then((m) => {
+      const ref = this.dialog.open(m.UserDialogComponent, {
+        data: { mode: 'edit', user },
+        width: '520px',
+      });
+      ref.afterClosed().subscribe((updated) => {
+        if (updated) {
+          this.snackBar.open('User updated.', 'OK', { duration: 3000 });
+          this.adminService.loadUsers();
+        }
+      });
+    });
   }
 
   resetPassword(userId: string, email: string): void {

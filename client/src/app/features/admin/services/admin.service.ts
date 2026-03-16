@@ -43,6 +43,14 @@ export class AdminService {
     });
   }
 
+  createUser(data: { email: string; first_name: string; last_name: string; password: string; role: string; phone?: string }): import('rxjs').Observable<any> {
+    return this.api.post(ENDPOINTS.ADMIN.CREATE_USER, data);
+  }
+
+  updateUser(userId: string, data: Record<string, unknown>): import('rxjs').Observable<any> {
+    return this.api.put(ENDPOINTS.ADMIN.UPDATE_USER(userId), data);
+  }
+
   resetPassword(userId: string): import('rxjs').Observable<{ id: string; email: string; email_sent: boolean; message: string }> {
     return this.api.post<{ id: string; email: string; email_sent: boolean; message: string }>(
       ENDPOINTS.ADMIN.RESET_PASSWORD(userId)
