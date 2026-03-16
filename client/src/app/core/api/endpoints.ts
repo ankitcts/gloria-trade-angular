@@ -50,6 +50,7 @@ export const ENDPOINTS = {
     USER_ROLE: (id: string) => `/admin/${id}/role`,
     USER_STATUS: (id: string) => `/admin/${id}/status`,
     USER_PERMISSIONS: (id: string) => `/admin/${id}/permissions`,
+    RESET_PASSWORD: (id: string) => `/admin/${id}/reset-password`,
     GROUPS: '/admin/groups',
     GROUP_DETAIL: (id: string) => `/admin/groups/${id}`,
     GROUP_MEMBERS: (id: string) => `/admin/groups/${id}/members`,

@@ -10,6 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { AdminService } from './services/admin.service';
 import { RelativeTimePipe } from '../../shared/pipes/relative-time.pipe';
 import { UserRole, AccountStatus } from '../../models/user.model';
@@ -27,6 +29,7 @@ import { UserRole, AccountStatus } from '../../models/user.model';
     MatSelectModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
     MatMenuModule,
     MatDividerModule,
     RelativeTimePipe,
@@ -98,6 +101,11 @@ import { UserRole, AccountStatus } from '../../models/user.model';
                     <mat-divider></mat-divider>
                     <button mat-menu-item (click)="changeStatus(row.id, 'active')">Activate</button>
                     <button mat-menu-item (click)="changeStatus(row.id, 'suspended')">Suspend</button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="resetPassword(row.id, row.email)">
+                      <mat-icon>lock_reset</mat-icon>
+                      <span>Reset Password</span>
+                    </button>
                   </mat-menu>
                 </td>
               </ng-container>
@@ -132,6 +140,7 @@ import { UserRole, AccountStatus } from '../../models/user.model';
 })
 export default class AdminComponent implements OnInit {
   readonly adminService = inject(AdminService);
+  private readonly snackBar = inject(MatSnackBar);
   displayedColumns = ['email', 'role', 'status', 'kyc', 'last_login', 'actions'];
 
   ngOnInit(): void {
@@ -144,5 +153,19 @@ export default class AdminComponent implements OnInit {
 
   changeStatus(userId: string, status: string): void {
     this.adminService.updateStatus(userId, status as AccountStatus);
+  }
+
+  resetPassword(userId: string, email: string): void {
+    if (!confirm(`Reset password for ${email}? A new password will be sent to their email.`)) {
+      return;
+    }
+    this.adminService.resetPassword(userId).subscribe({
+      next: (res) => {
+        this.snackBar.open(res.message, 'OK', { duration: 5000 });
+      },
+      error: (err) => {
+        this.snackBar.open(err.error?.detail || 'Failed to reset password', 'OK', { duration: 3000 });
+      },
+    });
   }
 }

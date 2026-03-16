@@ -42,4 +42,10 @@ export class AdminService {
       next: () => this.loadUsers(),
     });
   }
+
+  resetPassword(userId: string): import('rxjs').Observable<{ id: string; email: string; email_sent: boolean; message: string }> {
+    return this.api.post<{ id: string; email: string; email_sent: boolean; message: string }>(
+      ENDPOINTS.ADMIN.RESET_PASSWORD(userId)
+    );
+  }
 }

@@ -1,10 +1,17 @@
+import logging
+import secrets
+import string
 from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from app.auth.dependencies import require_admin
+from app.auth.service import hash_password
 from app.models.user import AccountStatus, User, UserRole
+from app.otp.service import _send_email_smtp
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -113,3 +120,108 @@ async def update_status(
     await user.save()
 
     return {"id": str(user.id), "account_status": user.account_status.value}
+
+
+def _generate_password(length: int = 12) -> str:
+    """Generate a secure random password."""
+    chars = string.ascii_letters + string.digits + "!@#$%"
+    # Ensure at least one of each type
+    pwd = [
+        secrets.choice(string.ascii_uppercase),
+        secrets.choice(string.ascii_lowercase),
+        secrets.choice(string.digits),
+        secrets.choice("!@#$%"),
+    ]
+    pwd += [secrets.choice(chars) for _ in range(length - 4)]
+    secrets.SystemRandom().shuffle(pwd)
+    return "".join(pwd)
+
+
+def _send_password_email(to_email: str, user_name: str, new_password: str) -> bool:
+    """Send new password to user via Gmail SMTP."""
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from app.config import settings
+
+    if not settings.smtp_user or not settings.smtp_password:
+        logger.warning("SMTP not configured, cannot send password email")
+        return False
+
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = "Gloria Trade - Your Password Has Been Reset"
+    msg["From"] = f"{settings.smtp_from_name} <{settings.smtp_user}>"
+    msg["To"] = to_email
+
+    text = (
+        f"Hi {user_name},\n\n"
+        f"Your password has been reset by an administrator.\n\n"
+        f"Your new password: {new_password}\n\n"
+        f"Please login and change your password immediately.\n\n"
+        f"- Gloria Trade Team"
+    )
+
+    html = f"""
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #2962ff; margin: 0; font-size: 24px;">Gloria Trade</h1>
+            <p style="color: #787b86; margin: 4px 0 0; font-size: 14px;">Password Reset</p>
+        </div>
+        <div style="background: #1e222d; border-radius: 12px; padding: 32px;">
+            <p style="color: #d1d4dc; margin: 0 0 8px; font-size: 15px;">Hi {user_name},</p>
+            <p style="color: #787b86; margin: 0 0 20px; font-size: 14px;">Your password has been reset by an administrator.</p>
+            <p style="color: #787b86; margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Your new password:</p>
+            <div style="background: #131722; border-radius: 8px; padding: 16px; text-align: center;">
+                <span style="font-size: 22px; font-weight: 700; letter-spacing: 2px; color: #2962ff; font-family: monospace;">{new_password}</span>
+            </div>
+            <p style="color: #ef5350; margin: 16px 0 0; font-size: 13px; font-weight: 500;">Please login and change your password immediately.</p>
+        </div>
+        <p style="color: #4c525e; font-size: 12px; text-align: center; margin-top: 24px;">
+            If you did not expect this, please contact your administrator.
+        </p>
+    </div>
+    """
+
+    msg.attach(MIMEText(text, "plain"))
+    msg.attach(MIMEText(html, "html"))
+
+    try:
+        with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as server:
+            server.starttls()
+            server.login(settings.smtp_user, settings.smtp_password)
+            server.sendmail(settings.smtp_user, to_email, msg.as_string())
+        logger.info(f"Password reset email sent to {to_email}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send password email to {to_email}: {e}")
+        return False
+
+
+@router.post("/{user_id}/reset-password")
+async def reset_password(
+    user_id: str,
+    _admin: Annotated[User, Depends(require_admin)],
+):
+    user = await User.get(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    from datetime import datetime, timezone
+
+    new_password = _generate_password()
+    user.password_hash = hash_password(new_password)
+    user.updated_at = datetime.now(timezone.utc)
+    await user.save()
+
+    email_sent = _send_password_email(
+        to_email=user.email,
+        user_name=user.first_name,
+        new_password=new_password,
+    )
+
+    return {
+        "id": str(user.id),
+        "email": user.email,
+        "email_sent": email_sent,
+        "message": f"Password reset for {user.email}. New password sent via email." if email_sent else f"Password reset but email failed. New password: {new_password}",
+    }
