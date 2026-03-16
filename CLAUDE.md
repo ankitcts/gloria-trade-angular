@@ -39,10 +39,20 @@ gloria-trade-angular/
 
 ## Implementation Status
 - [x] Phase 1: Project scaffolding (Angular 19 + Angular Material + charts)
-- [ ] Phase 1: Core services (auth, API, theme)
-- [ ] Phase 1: Layout (app-shell, sidebar, header)
-- [ ] Phase 1: Auth pages (login, register)
-- [ ] Phase 2: Domain models + shared components
+- [x] Phase 1: Core services (auth state/service/guard/interceptor, API service, theme service)
+- [x] Phase 1: Layout (app-shell with sidenav, sidebar nav, header with user menu)
+- [x] Phase 1: Auth pages (login, register)
+- [x] Phase 1: Lazy-loaded routing for all features
+- [x] Phase 2: Domain models (11 model files - user, auth, security, trading, portfolio, prediction, sentiment, market, watchlist, notification)
+- [x] Phase 2: Dashboard placeholder with summary cards
+- [ ] Phase 2: Shared components (loading-spinner, price-change-badge, data-table, search-bar)
+- [ ] Phase 2: Shared pipes and directives
+- [x] Phase 2: Shared components (loading-spinner, price-change-badge)
+- [x] Phase 2: Shared pipes (currency-format, relative-time) and directives (role)
+- [x] Backend: FastAPI server with all routers (auth, securities, trading, portfolio, predictions, watchlists, notifications, admin)
+- [x] Backend: 13 Beanie ODM models (user, session, security, price history, order, portfolio, watchlist, ML model, prediction, sentiment, market, notification)
+- [x] Backend: JWT auth (register, login, refresh, logout, session management)
+- [x] Backend: Docker Compose (MongoDB 7 + Mongo Express)
 - [ ] Phase 3: Securities feature
 - [ ] Phase 4: Portfolio feature
 - [ ] Phase 5: Trading feature
