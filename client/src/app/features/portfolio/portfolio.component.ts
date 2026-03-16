@@ -207,6 +207,6 @@ export default class PortfolioComponent implements OnInit {
   defaultPortfolio = () => this.portfolioService.portfolios().find((p) => p.is_default) || this.portfolioService.portfolios()[0] || null;
 
   onPortfolioClick(id: string): void {
-    // TODO: navigate to portfolio detail when built
+    this.router.navigate(['/portfolio', id]);
   }
 }
