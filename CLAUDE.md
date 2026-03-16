@@ -45,22 +45,17 @@ gloria-trade-angular/
 - [x] Phase 1: Lazy-loaded routing for all features
 - [x] Phase 2: Domain models (11 model files - user, auth, security, trading, portfolio, prediction, sentiment, market, watchlist, notification)
 - [x] Phase 2: Dashboard placeholder with summary cards
-- [ ] Phase 2: Shared components (loading-spinner, price-change-badge, data-table, search-bar)
-- [ ] Phase 2: Shared pipes and directives
-- [x] Phase 2: Shared components (loading-spinner, price-change-badge)
-- [x] Phase 2: Shared pipes (currency-format, relative-time) and directives (role)
-- [x] Backend: FastAPI server with all routers (auth, securities, trading, portfolio, predictions, watchlists, notifications, admin)
-- [x] Backend: 13 Beanie ODM models (user, session, security, price history, order, portfolio, watchlist, ML model, prediction, sentiment, market, notification)
-- [x] Backend: JWT auth (register, login, refresh, logout, session management)
-- [x] Backend: Docker Compose (MongoDB 7 + Mongo Express)
-- [ ] Phase 3: Securities feature
-- [ ] Phase 4: Portfolio feature
-- [ ] Phase 5: Trading feature
-- [ ] Phase 6: Predictions + analytics
-- [ ] Phase 7: Watchlist + notifications
-- [ ] Phase 8: WebSocket integration
-- [ ] Phase 9: Admin panel
-- [ ] Phase 10: Dashboard + polish
+- [x] Phase 2: Shared components (loading-spinner, price-change-badge, currency-format pipe, relative-time pipe, role directive)
+- [x] Backend: FastAPI server with 8 routers (auth, securities, orders, portfolios, predictions, watchlists, notifications, admin)
+- [x] Backend: 13 Beanie ODM models, JWT auth, Docker Compose (MongoDB 7 + Mongo Express)
+- [x] Phase 3: Securities feature (list with table/search/filters, detail with candlestick chart, fundamentals, risk badge)
+- [x] Phase 4: Portfolio feature (summary cards, portfolio cards grid, holdings table with P&L)
+- [x] Phase 5: Trading feature (order form with buy/sell, order types, order history with cancel)
+- [x] Phase 6: Predictions (ML predictions grid, signal badges, risk metrics, price forecast)
+- [x] Phase 7: Watchlist (CRUD, securities list, price alerts) + Notifications (list, unread count, mark read)
+- [x] Phase 9: Admin panel (user management table, role/status actions)
+- [ ] Phase 8: WebSocket integration (real-time price updates, order status, notifications)
+- [ ] Phase 10: Dashboard enhancements + responsive polish
 
 ## Key Patterns
 - Standalone components only (no NgModules)
