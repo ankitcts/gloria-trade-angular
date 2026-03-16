@@ -12,6 +12,7 @@ dependencies = [
     # Database
     "motor>=3.6.0",
     "beanie>=1.27.0",
+    "dnspython>=2.6.0",
 
     # Auth
     "python-jose[cryptography]>=3.3.0",

@@ -9,8 +9,9 @@ class Settings(BaseSettings):
     app_host: str = "0.0.0.0"
     app_port: int = 9000
 
-    # MongoDB
-    mongodb_uri: str = "mongodb://gloria_admin:gloria_secret_dev@localhost:27017"
+    # MongoDB (Atlas - remote, switch back to local Docker URI when ready)
+    # Local Docker: "mongodb://gloria_admin:gloria_secret_dev@localhost:27017"
+    mongodb_uri: str = "mongodb+srv://ankitcts_db_user:MZIJbvDBu86NTORy@tradingwarehouse.he55x3b.mongodb.net/?appName=tradingWarehouse"
     mongodb_db_name: str = "gloria_trade_angular"
 
     # JWT
