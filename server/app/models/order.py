@@ -63,9 +63,10 @@ class Order(Document):
     total_amount: Optional[float] = None
     total_fees: float = 0
     total_taxes: float = 0
-    currency: str = "INR"
+    currency: str = "USD"
     realized_pnl: Optional[float] = None
     is_simulated: bool = False
+    trigger_source: Optional[str] = None
     placed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     executed_at: Optional[datetime] = None
     cancelled_at: Optional[datetime] = None

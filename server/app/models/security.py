@@ -79,7 +79,7 @@ class Security(Document):
     industry: Optional[str] = None
     description: Optional[str] = None
     country_code: str = "IN"
-    currency: str = "INR"
+    currency: str = "USD"
     isin: Optional[str] = None
     listings: list[ExchangeListing] = []
     fundamentals: Fundamentals = Field(default_factory=Fundamentals)

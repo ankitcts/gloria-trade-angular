@@ -30,7 +30,7 @@ class Transaction(BaseModel):
     fees: float = 0
     taxes: float = 0
     net_amount: float
-    currency: str = "INR"
+    currency: str = "USD"
     executed_at: datetime
 
 
@@ -47,7 +47,7 @@ class Portfolio(Document):
     name: str
     description: Optional[str] = None
     is_default: bool = False
-    currency: str = "INR"
+    currency: str = "USD"
     holdings: list[Holding] = []
     transactions: list[Transaction] = []
     snapshots: list[PortfolioSnapshot] = []

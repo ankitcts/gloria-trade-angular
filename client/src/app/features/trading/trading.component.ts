@@ -12,7 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { UpperCasePipe } from '@angular/common';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'rxjs';
 import { TradingService } from './services/trading.service';
 import { SecuritiesService } from '../securities/services/securities.service';
 import { PortfolioService } from '../portfolio/services/portfolio.service';
@@ -260,16 +260,19 @@ export default class TradingComponent implements OnInit {
       switchMap((q) => {
         if (q.length < 1) { this.searchResults.set([]); this.searching.set(false); return of([]); }
         this.searching.set(true);
-        return this.securitiesService.searchSecurities(q);
+        return this.securitiesService.searchSecurities(q).pipe(
+          catchError(() => { this.searching.set(false); return of([]); })
+        );
       })
-    ).subscribe({
-      next: (results) => { this.searchResults.set(results as SecuritySummary[]); this.searching.set(false); },
-      error: () => this.searching.set(false),
-    });
+    ).subscribe((results) => { this.searchResults.set(results as SecuritySummary[]); this.searching.set(false); });
   }
 
-  onSearchChange(value: string): void {
-    if (typeof value === 'string') { this.selectedSecurity.set(null); this.searchSubject.next(value); }
+  onSearchChange(value: unknown): void {
+    // Only trigger search for string input, not when autocomplete sets the object
+    if (typeof value === 'string') {
+      this.selectedSecurity.set(null);
+      this.searchSubject.next(value);
+    }
   }
   onSecuritySelected(sec: SecuritySummary): void { this.selectedSecurity.set(sec); this.searchResults.set([]); }
   clearSecurity(): void { this.selectedSecurity.set(null); this.searchInput = ''; this.searchResults.set([]); }
