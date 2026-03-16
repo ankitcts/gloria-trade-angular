@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     # Data Providers
     alpha_vantage_api_key: str = ""
 
+    # SMTP (Gmail)
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from_name: str = "Gloria Trade"
+
     # ML
     model_cache_dir: str = "./model_cache"
     prediction_cache_ttl_hours: int = 24
