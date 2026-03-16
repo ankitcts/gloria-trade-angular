@@ -42,17 +42,17 @@ import { PriceChangeBadgeComponent } from '../../shared/components/price-change-
       } @else {
         <!-- Summary Cards -->
         <div class="summary-cards">
-          <mat-card class="summary-card">
+          <mat-card class="summary-card clickable" routerLink="/portfolio">
             <mat-card-content>
               <div class="card-icon"><mat-icon>account_balance_wallet</mat-icon></div>
               <div class="card-info">
                 <span class="card-label">Portfolio Value</span>
-                <span class="card-value">{{ dashboardService.summary().portfolioValue | currencyFormat:'INR':true }}</span>
+                <span class="card-value">{{ dashboardService.summary().portfolioValue | currencyFormat:'USD':true }}</span>
               </div>
             </mat-card-content>
           </mat-card>
 
-          <mat-card class="summary-card">
+          <mat-card class="summary-card clickable" routerLink="/portfolio">
             <mat-card-content>
               <div class="card-icon" [class.profit]="dashboardService.summary().todaysPnl >= 0" [class.loss]="dashboardService.summary().todaysPnl < 0">
                 <mat-icon>{{ dashboardService.summary().todaysPnl >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
@@ -66,7 +66,7 @@ import { PriceChangeBadgeComponent } from '../../shared/components/price-change-
             </mat-card-content>
           </mat-card>
 
-          <mat-card class="summary-card">
+          <mat-card class="summary-card clickable" routerLink="/trading">
             <mat-card-content>
               <div class="card-icon orders"><mat-icon>swap_horiz</mat-icon></div>
               <div class="card-info">
@@ -76,7 +76,7 @@ import { PriceChangeBadgeComponent } from '../../shared/components/price-change-
             </mat-card-content>
           </mat-card>
 
-          <mat-card class="summary-card">
+          <mat-card class="summary-card clickable" routerLink="/watchlist">
             <mat-card-content>
               <div class="card-icon alerts"><mat-icon>notifications_active</mat-icon></div>
               <div class="card-info">
@@ -193,6 +193,8 @@ import { PriceChangeBadgeComponent } from '../../shared/components/price-change-
     .loading-container { display: flex; justify-content: center; padding: 64px; }
     .summary-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
     .summary-card mat-card-content { display: flex; align-items: center; gap: 16px; padding: 16px; }
+    .summary-card.clickable { cursor: pointer; transition: transform 0.15s; }
+    .summary-card.clickable:hover { transform: translateY(-2px); }
     .card-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(255,179,0,0.12); display: flex; align-items: center; justify-content: center; }
     .card-icon mat-icon { color: #ffb300; }
     .card-icon.profit { background: rgba(102,187,106,0.12); }
