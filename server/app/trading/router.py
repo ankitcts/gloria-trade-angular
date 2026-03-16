@@ -94,6 +94,57 @@ async def create_order(
     return {"id": str(order.id), "status": order.status.value, "symbol": order.symbol}
 
 
+@router.get("/{order_id}")
+async def get_order(
+    order_id: str,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    order = await Order.get(order_id)
+    if not order or order.user_id != str(current_user.id):
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    return {
+        "id": str(order.id),
+        "user_id": order.user_id,
+        "portfolio_id": order.portfolio_id,
+        "security_id": order.security_id,
+        "symbol": order.symbol,
+        "exchange_code": order.exchange_code,
+        "security_name": order.security_name,
+        "order_type": order.order_type.value,
+        "side": order.side.value,
+        "quantity": order.quantity,
+        "filled_quantity": order.filled_quantity,
+        "limit_price": order.limit_price,
+        "stop_price": order.stop_price,
+        "avg_fill_price": order.avg_fill_price,
+        "validity": order.validity.value,
+        "status": order.status.value,
+        "fills": [
+            {
+                "fill_id": f.fill_id,
+                "quantity": f.quantity,
+                "price": f.price,
+                "fees": f.fees,
+                "filled_at": f.filled_at.isoformat(),
+            }
+            for f in order.fills
+        ],
+        "total_amount": order.total_amount,
+        "total_fees": order.total_fees,
+        "total_taxes": order.total_taxes,
+        "currency": order.currency,
+        "realized_pnl": order.realized_pnl,
+        "is_simulated": order.is_simulated,
+        "trigger_source": order.trigger_source,
+        "placed_at": order.placed_at.isoformat(),
+        "executed_at": order.executed_at.isoformat() if order.executed_at else None,
+        "cancelled_at": order.cancelled_at.isoformat() if order.cancelled_at else None,
+        "created_at": order.created_at.isoformat(),
+        "updated_at": order.updated_at.isoformat(),
+    }
+
+
 @router.post("/{order_id}/cancel")
 async def cancel_order(
     order_id: str,

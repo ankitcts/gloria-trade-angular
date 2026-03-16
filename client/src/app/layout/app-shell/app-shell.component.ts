@@ -26,9 +26,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
       height: 100vh;
     }
     .shell-sidenav {
-      width: 240px;
-      background: var(--gt-sidenav-bg, #111822);
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      width: 220px;
+      background: var(--gt-bg-card) !important;
+      border-right: 1px solid var(--gt-border) !important;
     }
     .shell-content {
       display: flex;

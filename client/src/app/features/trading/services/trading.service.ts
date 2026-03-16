@@ -10,11 +10,13 @@ export class TradingService {
   private readonly api = inject(ApiService);
 
   private readonly _orders = signal<Order[]>([]);
+  private readonly _selectedOrder = signal<Order | null>(null);
   private readonly _loading = signal(false);
   private readonly _totalOrders = signal(0);
   private readonly _submitting = signal(false);
 
   readonly orders = this._orders.asReadonly();
+  readonly selectedOrder = this._selectedOrder.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly totalOrders = this._totalOrders.asReadonly();
   readonly submitting = this._submitting.asReadonly();
@@ -52,9 +54,25 @@ export class TradingService {
     });
   }
 
+  loadOrderDetail(orderId: string): void {
+    this._loading.set(true);
+    this._selectedOrder.set(null);
+    this.api.get<Order>(ENDPOINTS.TRADING.ORDER_DETAIL(orderId)).subscribe({
+      next: (order) => {
+        this._selectedOrder.set(order);
+        this._loading.set(false);
+      },
+      error: () => this._loading.set(false),
+    });
+  }
+
   cancelOrder(orderId: string): void {
     this.api.post(ENDPOINTS.TRADING.CANCEL_ORDER(orderId)).subscribe({
       next: () => this.loadOrders(),
     });
+  }
+
+  clearSelection(): void {
+    this._selectedOrder.set(null);
   }
 }

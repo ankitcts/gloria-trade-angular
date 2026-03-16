@@ -34,14 +34,14 @@ interface NavItem {
       padding-top: 8px;
     }
     .active-link {
-      background: rgba(255, 179, 0, 0.12);
-      border-right: 3px solid #ffb300;
+      background: rgba(41, 98, 255, 0.1);
+      border-right: 3px solid var(--gt-primary, #2962ff);
     }
     mat-icon {
-      color: #8c8c8c;
+      color: var(--gt-text-secondary, #787b86);
     }
     .active-link mat-icon {
-      color: #ffb300;
+      color: var(--gt-primary, #2962ff);
     }
   `],
 })

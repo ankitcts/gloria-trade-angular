@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -136,7 +137,7 @@ import {
             } @else {
               <div class="orders-list">
                 @for (order of tradingService.orders(); track order.id) {
-                  <div class="order-item">
+                  <div class="order-item" (click)="onOrderClick(order.id)">
                     <div class="order-main">
                       <span class="order-side" [class.buy]="order.side === 'buy'" [class.sell]="order.side === 'sell'">
                         {{ order.side | uppercase }}
@@ -179,7 +180,8 @@ import {
     .empty-state { display: flex; flex-direction: column; align-items: center; padding: 48px; color: #8c8c8c; }
     .empty-state mat-icon { font-size: 40px; width: 40px; height: 40px; opacity: 0.3; margin-bottom: 8px; }
     .orders-list { display: flex; flex-direction: column; }
-    .order-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .order-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--gt-border); cursor: pointer; }
+    .order-item:hover { background: var(--gt-bg-hover); }
     .order-main { display: flex; align-items: center; gap: 12px; }
     .order-side { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
     .order-side.buy { background: rgba(102, 187, 106, 0.15); color: #66bb6a; }
@@ -202,6 +204,7 @@ import {
 export default class TradingComponent implements OnInit {
   readonly tradingService = inject(TradingService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
 
   orderSide: string = 'buy';
   orderType: string = 'market';
@@ -265,6 +268,10 @@ export default class TradingComponent implements OnInit {
   onCancelOrder(orderId: string): void {
     this.tradingService.cancelOrder(orderId);
     this.snackBar.open('Order cancelled', 'OK', { duration: 2000 });
+  }
+
+  onOrderClick(orderId: string): void {
+    this.router.navigate(['/trading/orders', orderId]);
   }
 
   private resetForm(): void {
