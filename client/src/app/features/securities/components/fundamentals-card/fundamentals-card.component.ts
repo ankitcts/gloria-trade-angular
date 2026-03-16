@@ -81,7 +81,7 @@ import { CurrencyFormatPipe } from '../../../../shared/pipes/currency-format.pip
 })
 export class FundamentalsCardComponent {
   fundamentals = input.required<Fundamentals>();
-  currency = input<string>('INR');
+  currency = input<string>('USD');
 
   formatNumber(val: number | null | undefined): string {
     if (val == null) return '--';
@@ -95,8 +95,8 @@ export class FundamentalsCardComponent {
 
   formatVolume(val: number | null | undefined): string {
     if (val == null) return '--';
-    if (val >= 1_00_00_000) return `${(val / 1_00_00_000).toFixed(2)}Cr`;
-    if (val >= 1_00_000) return `${(val / 1_00_000).toFixed(2)}L`;
+    if (val >= 1_000_000_000) return `${(val / 1_000_000_000).toFixed(2)}B`;
+    if (val >= 1_000_000) return `${(val / 1_000_000).toFixed(2)}M`;
     if (val >= 1_000) return `${(val / 1_000).toFixed(1)}K`;
     return val.toFixed(0);
   }

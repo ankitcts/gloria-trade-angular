@@ -2,22 +2,22 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'currencyFormat', standalone: true })
 export class CurrencyFormatPipe implements PipeTransform {
-  transform(value: number | null | undefined, currency = 'INR', compact = false): string {
+  transform(value: number | null | undefined, currency = 'USD', compact = false): string {
     if (value == null) return '--';
 
     if (compact) {
-      if (Math.abs(value) >= 1_00_00_000) {
-        return `${this.symbol(currency)}${(value / 1_00_00_000).toFixed(2)}Cr`;
+      if (Math.abs(value) >= 1_000_000_000) {
+        return `${this.symbol(currency)}${(value / 1_000_000_000).toFixed(2)}B`;
       }
-      if (Math.abs(value) >= 1_00_000) {
-        return `${this.symbol(currency)}${(value / 1_00_000).toFixed(2)}L`;
+      if (Math.abs(value) >= 1_000_000) {
+        return `${this.symbol(currency)}${(value / 1_000_000).toFixed(2)}M`;
       }
       if (Math.abs(value) >= 1_000) {
         return `${this.symbol(currency)}${(value / 1_000).toFixed(2)}K`;
       }
     }
 
-    return `${this.symbol(currency)}${value.toLocaleString('en-IN', {
+    return `${this.symbol(currency)}${value.toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`;
