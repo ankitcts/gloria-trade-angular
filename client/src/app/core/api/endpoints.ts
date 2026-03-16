@@ -40,6 +40,10 @@ export const ENDPOINTS = {
     MARK_READ: (id: string) => `/notifications/${id}/read`,
     MARK_ALL_READ: '/notifications/read-all',
   },
+  OTP: {
+    SEND: '/otp/send',
+    VERIFY: '/otp/verify',
+  },
   ADMIN: {
     USERS: '/admin',
     USER_DETAIL: (id: string) => `/admin/${id}`,

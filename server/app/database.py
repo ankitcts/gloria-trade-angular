@@ -13,6 +13,7 @@ from app.models.order import Order
 from app.models.sentiment import SentimentRecord
 from app.models.ml import MLModel, MLPrediction
 from app.models.notification import Notification
+from app.models.otp import OTPRecord
 
 ALL_DOCUMENT_MODELS = [
     User,
@@ -28,6 +29,7 @@ ALL_DOCUMENT_MODELS = [
     MLModel,
     MLPrediction,
     Notification,
+    OTPRecord,
 ]
 
 _client: AsyncIOMotorClient | None = None

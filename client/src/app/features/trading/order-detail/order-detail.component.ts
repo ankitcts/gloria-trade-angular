@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UpperCasePipe, DatePipe } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -418,6 +419,7 @@ import { Order } from '../../../models/trading.model';
 export default class OrderDetailComponent implements OnInit, OnDestroy {
   readonly tradingService = inject(TradingService);
   private readonly route = inject(ActivatedRoute);
+  private readonly dialog = inject(MatDialog);
   readonly o = this.tradingService.selectedOrder;
 
   fillColumns = ['fill_id', 'quantity', 'price', 'value', 'fees', 'filled_at'];
@@ -445,8 +447,25 @@ export default class OrderDetailComponent implements OnInit, OnDestroy {
 
   onCancel(): void {
     const o = this.o();
-    if (o) {
-      this.tradingService.cancelOrder(o.id);
-    }
+    if (!o) return;
+
+    import('../../../shared/components/otp-dialog/otp-dialog.component').then((m) => {
+      const dialogRef = this.dialog.open(m.OtpDialogComponent, {
+        data: {
+          title: 'Cancel Order',
+          message: `Verify your identity to cancel ${o.side.toUpperCase()} ${o.quantity} ${o.symbol}`,
+          purpose: 'cancel_order',
+          actionLabel: 'Confirm Cancel',
+        },
+        width: '440px',
+        disableClose: true,
+      });
+
+      dialogRef.afterClosed().subscribe((verified) => {
+        if (verified) {
+          this.tradingService.cancelOrder(o.id);
+        }
+      });
+    });
   }
 }
